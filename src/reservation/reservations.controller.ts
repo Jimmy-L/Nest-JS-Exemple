@@ -18,8 +18,10 @@ import { ReservationEntity } from './entity/reservation.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { LoggerService } from './logger/logger.service';
+import { fakeCreateReservation } from './models/create-reservation.model';
+import { fakeUpdateReservation } from './models/update-reservation.model';
 
-@Controller('')
+@Controller('reservations')
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('reservations')
 export class ReservationsController {
@@ -77,7 +79,8 @@ export class ReservationsController {
     })
     async postReservation(@Body() createReservation: CreateReservationDto): Promise<ReservationEntity> {
         try {
-            const reservation = await this.reservationsService.postReservation(createReservation);
+            const fake_createReservation = fakeCreateReservation();
+            const reservation = await this.reservationsService.postReservation(fake_createReservation);
             return reservation;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController PostReservation');
@@ -92,7 +95,9 @@ export class ReservationsController {
     })
     async updateReservationById(@Param('reservationId') reservationId: string, @Body() updateReservation: UpdateReservationDto): Promise<ReservationEntity> {
         try {
-            updateReservation = new UpdateReservationDto(updateReservation);
+            const fake_upadteReservation = fakeUpdateReservation();
+            // updateReservation = new UpdateReservationDto(updateReservation);
+            updateReservation = new UpdateReservationDto(fake_upadteReservation);
             const reservation = await this.reservationsService.updateReservationById(reservationId, updateReservation);
             return reservation;
         } catch (e) {

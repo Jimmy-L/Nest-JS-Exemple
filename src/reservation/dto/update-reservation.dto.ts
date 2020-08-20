@@ -1,31 +1,20 @@
 import { Moment } from 'moment';
 import { IsBoolean, IsEmail, IsEnum, IsIn, IsISO8601, IsNumber, IsOptional, Matches, Max, MaxLength, Min } from 'class-validator';
-// import { UpdateReservation, ReservationType, ReservationStatus, fakeUpdateReservation } from '@aphilia/data-reservations';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 // import { NAME_PATTERN } from '@aphilia/utils';
-import { ReservationType, ReservationStatus } from '../models/reservation.model';
-import { UpdateReservation } from '../models/update-reservation.model';
+import { ReservationStatus } from '../models/reservation.model';
+import { UpdateReservation, fakeUpdateReservation } from '../models/update-reservation.model';
 
-// const fakeUpdateReservationData = fakeUpdateReservation();
+const fakeUpdateReservationData = fakeUpdateReservation();
 
 export class UpdateReservationDto extends UpdateReservation 
 {
-    @ApiPropertyOptional({
-        description: 'The date time of the reservation.',
-        type: String,
-        // example: fakeUpdateReservationData.dateTime,
-        format: 'ISO8601'
-    })
-    @IsISO8601()
-    @IsOptional()
-    dateTime?: Moment;
-
     /**
      * The date time the reservation is suppose to go at table.
      */
     @ApiPropertyOptional({
         description: 'Date time the customer is estimated to be at table.',
-        // example: fakeUpdateReservationData.estimatedAtTableAt,
+        example: fakeUpdateReservationData.estimatedAtTableAt,
         type: String,
         format: 'ISO8601'
     })
@@ -38,7 +27,7 @@ export class UpdateReservationDto extends UpdateReservation
      */
     @ApiProperty({
         description: 'Number of people for the reservation.',
-        // example: fakeUpdateReservationData.pax,
+        example: fakeUpdateReservationData.pax,
         maximum: 30
     })
     @IsNumber()
@@ -50,26 +39,26 @@ export class UpdateReservationDto extends UpdateReservation
     /**
      * First name of the reservation.
      */
+    // @Matches(NAME_PATTERN)
     @ApiPropertyOptional({
         description: 'First name of the customer taking the reservation.',
-        // example: fakeUpdateReservationData.firstName,
+        example: fakeUpdateReservationData.firstName,
         // pattern: NAME_PATTERN.toString()
     })
     @IsOptional()
-    // @Matches(NAME_PATTERN)
     @MaxLength(20)
     firstName?: string;
 
     /**
      * Last name of the reservation.
      */
+    // @Matches(NAME_PATTERN)
     @ApiProperty({
         description: 'Last name of the customer taking the reservation.',
-        // example: fakeUpdateReservationData.lastName,
+        example: fakeUpdateReservationData.lastName,
         // pattern: NAME_PATTERN.toString()
     })
     @IsOptional()
-    // @Matches(NAME_PATTERN)
     @MaxLength(20)
     lastName?: string;
 
@@ -78,7 +67,7 @@ export class UpdateReservationDto extends UpdateReservation
      */
     @ApiPropertyOptional({
         description: 'Email of the customer taking the reservation.',
-        // example: fakeUpdateReservationData.email
+        example: fakeUpdateReservationData.email
     })
     @IsOptional()
     @IsEmail()
@@ -89,7 +78,7 @@ export class UpdateReservationDto extends UpdateReservation
      */
     @ApiPropertyOptional({
         description: 'Phone number of the customer making the reservation.',
-        // example: fakeUpdateReservationData.phoneNumber
+        example: fakeUpdateReservationData.phoneNumber
     })
     @IsOptional()
     phoneNumber?: string;
@@ -99,7 +88,7 @@ export class UpdateReservationDto extends UpdateReservation
      */
     @ApiPropertyOptional({
         description: 'Tables number the reservation will be assigned to.',
-        // example: fakeUpdateReservationData.tables,
+        example: fakeUpdateReservationData.tables,
         type: [Number]
     })
     @IsOptional()
@@ -107,24 +96,11 @@ export class UpdateReservationDto extends UpdateReservation
     tables?: number[];
 
     /**
-     * Type of the reservation.
-     */
-    @ApiPropertyOptional({
-        description: 'The type of the reservation.',
-        // example: fakeUpdateReservationData.type.toString(),
-        enumName: 'ReservationType',
-        enum: ReservationType
-    })
-    @IsOptional()
-    @IsIn([ReservationType.WALK_IN, ReservationType.PRE_RESERVATION])
-    type?: ReservationType;
-
-    /**
      * Status of the reservation
      */
     @ApiPropertyOptional({
         description: 'Status of the reservation',
-        // example: fakeUpdateReservationData.status,
+        example: fakeUpdateReservationData.status,
         enum: ReservationStatus,
         enumName: 'ReservationStatus'
     })
@@ -132,14 +108,4 @@ export class UpdateReservationDto extends UpdateReservation
     @IsOptional()
     status?: ReservationStatus;
 
-    /**
-     * Tells if the tables are forced or not
-     */
-    @ApiPropertyOptional({
-        description: 'Indicates if the reservation has been forced or not.',
-        // example: fakeUpdateReservationData.forcedTable
-    })
-    @IsOptional()
-    @IsBoolean()
-    forcedTable?: boolean;
 }

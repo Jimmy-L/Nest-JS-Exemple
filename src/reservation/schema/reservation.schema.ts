@@ -14,11 +14,11 @@ export const ReservationSchema = new mongoose.Schema({
         type: Number,
         required: false
     },
-    restaurant: {
-        type: String,
-        required: true
-    },
-    forcedTable: Boolean,
+    // restaurant: {
+    //     type: String,
+    //     required: true
+    // },
+    // forcedTable: Boolean,
     firstName: {
         type: String,
         required: false

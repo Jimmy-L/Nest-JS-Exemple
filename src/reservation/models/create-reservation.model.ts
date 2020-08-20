@@ -1,73 +1,81 @@
+import * as moment from 'moment';
 import { Moment } from 'moment';
-import { ReservationType, ReservationStatus } from './reservation.model';
-const moment = require('moment');
+import { ReservationStatus } from './reservation.model';
+import * as faker from 'faker';
 
 export class CreateReservation {
     /**
-     * Id of the restaurant the reservation belongs to.
+     * ID of the reservation
      */
-    restaurant: string;
-
+    _id: string;
     /**
-     * The date time of the reservation
+     * Restaurant where the reservation has been taken. This is only the mongo ID in the DB.
      */
-    dateTime: Moment;
-
+    siteId: string;
     /**
      * The date time the reservation is suppose to go at table.
      */
     estimatedAtTableAt: Moment;
-
     /**
-     * The number of people on the reservation
+     * Number of people for that reservation
      */
     pax: number;
-
     /**
-     * The first name of the reservation
+     * First name of the person that made the reservation.
+     * The first name is mandatory if the consumer makes th reservations by himself.
+     * It is optional if the reservation is made by the restaurant.
      */
     firstName?: string;
-
     /**
-     * The last name of the reservation
+     * Last Name of the person who made the reservation. It can be unset if the reservation has been taken for the same moment it will go at table.
+     * Example: The reservation is a walk-in and the table is free right now. We record the reservation but we don't take the customer's information.
      */
     lastName?: string;
-
     /**
-     * The email of the reservation
+     * Email for the reservation.
+     * The email is mandatory if the consumer makes th reservations by himself.
+     * It is optional if the reservation is made by the restaurant.
      */
     email?: string;
-
     /**
-     * The phone number of the reservation
+     * Phone number for the reservation. It can be unset if the reservation has been taken for the same moment it will go at table.
+     * Example: The reservation is a walk-in and the table is free right now. We record the reservation but we don't take the customer's information.
      */
     phoneNumber?: string;
-
-    /**
-     * The tables of the reservations
-     */
-    tables?: number[];
-
-    /**
-     * The type of the reservation
-     */
-    type: ReservationType;
-
-    /**
-     * Tells if the tables are forced or not
-     */
-    forcedTable: boolean;
-
     /**
      * Status of the reservation
      */
     status: ReservationStatus;
+    /**
+     * Table the reservation is assigned to.
+     */
+    tables?: number[];
+    /**
+     * Date time the reservation was updated the last time
+     */
+    updatedAt: Moment;
+    /**
+     * Date time the reservation was created
+     */
+    createdAt: Moment;
 
     constructor(reservation: Partial<CreateReservation>) {
         Object.assign(this, reservation);
 
         // this.dateTime = moment.utc(this.dateTime);
         this.estimatedAtTableAt = this.estimatedAtTableAt !== undefined ? moment.utc(this.estimatedAtTableAt) : undefined;
-        this.forcedTable = this.forcedTable ? this.forcedTable : false;
     }
 }
+
+export const fakeCreateReservation = () =>
+    new CreateReservation({
+        siteId: 'siteId',
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        pax: faker.random.number({ min: 1, max: 20 }),
+        phoneNumber: faker.phone.phoneNumber(),
+        status: faker.random.objectElement(ReservationStatus) as ReservationStatus,
+        tables: [faker.random.number({ min: 0, max: 2000 })],
+        email: faker.internet.email(),
+        estimatedAtTableAt: moment(faker.date.future())
+    });

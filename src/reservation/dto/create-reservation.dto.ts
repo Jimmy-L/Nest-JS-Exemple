@@ -1,35 +1,25 @@
 import { Moment } from 'moment';
 import { IsBoolean, IsEmail, IsEnum, IsIn, IsISO8601, IsMongoId, IsNumber, IsOptional, IsString, Matches, Max, MaxLength } from 'class-validator';
-// import { CreateReservation, fakeCreateReservation, ReservationStatus, ReservationType } from '@aphilia/data-reservations';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 // import { NAME_PATTERN } from '@aphilia/utils';
 import { ReservationStatus, ReservationType } from '../models/reservation.model';
-import { CreateReservation } from '../models/create-reservation.model';
+import { CreateReservation, fakeCreateReservation } from '../models/create-reservation.model';
 
-// const fakeCreateReservationData = fakeCreateReservation();
+const fakeCreateReservationData = fakeCreateReservation();
 
 export class CreateReservationDto extends CreateReservation 
 {
     @ApiProperty({
         description: 'The restaurant mongo id the reservation belongs to.',
         type: String,
-        // example: fakeCreateReservationData.restaurant
+        example: fakeCreateReservationData.siteId
     })
     @IsMongoId()
-    restaurant: string;
-
-    @ApiProperty({
-        description: 'The date time of the reservation.',
-        type: String,
-        // example: fakeCreateReservationData.dateTime,
-        format: 'ISO8601'
-    })
-    @IsISO8601()
-    dateTime: Moment;
+    siteId: string;
 
     @ApiPropertyOptional({
         description: 'Email of the customer taking the reservation.',
-        // example: fakeCreateReservationData.email
+        example: fakeCreateReservationData.email
     })
     @IsEmail()
     @IsOptional()
@@ -37,43 +27,36 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiProperty({
         description: 'Date time the customer is estimated to be at table.',
-        // example: fakeCreateReservationData.estimatedAtTableAt,
+        example: fakeCreateReservationData.estimatedAtTableAt,
         type: String,
         format: 'ISO8601'
     })
     @IsISO8601()
     estimatedAtTableAt: Moment;
 
+    // @Matches(NAME_PATTERN)
     @ApiPropertyOptional({
         description: 'First name of the customer taking the reservation.',
-        // example: fakeCreateReservationData.firstName,
+        example: fakeCreateReservationData.firstName,
         // pattern: NAME_PATTERN.toString()
     })
     @IsOptional()
-    // @Matches(NAME_PATTERN)
     @MaxLength(20)
     firstName?: string;
 
-    @ApiProperty({
-        description: 'Indicates if the reservation has been forced or not.',
-        // example: fakeCreateReservationData.forcedTable
-    })
-    @IsBoolean()
-    forcedTable: boolean;
-
+    // @Matches(NAME_PATTERN)
     @ApiProperty({
         description: 'Last name of the customer taking the reservation.',
-        // example: fakeCreateReservationData.lastName,
+        example: fakeCreateReservationData.lastName,
         // pattern: NAME_PATTERN.toString()
     })
     @IsOptional()
-    // @Matches(NAME_PATTERN)
     @MaxLength(20)
-    lastName: string;
+    lastName?: string;
 
     @ApiProperty({
         description: 'Number of people for the reservation.',
-        // example: fakeCreateReservationData.pax,
+        example: fakeCreateReservationData.pax,
         maximum: 30
     })
     @IsNumber()
@@ -82,7 +65,7 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiPropertyOptional({
         description: 'Phone number of the customer making the reservation.',
-        // example: fakeCreateReservationData.phoneNumber
+        example: fakeCreateReservationData.phoneNumber
     })
     @IsString()
     @IsOptional()
@@ -90,7 +73,7 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiProperty({
         description: 'Status of the reservation',
-        // example: fakeCreateReservationData.status,
+        example: fakeCreateReservationData.status,
         enum: ReservationStatus,
         enumName: 'ReservationStatus'
     })
@@ -100,21 +83,12 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiPropertyOptional({
         description: 'Tables number the reservation will be assigned to.',
-        // example: fakeCreateReservationData.tables,
+        example: fakeCreateReservationData.tables,
         type: [Number]
     })
     @IsOptional()
     @IsNumber({}, { each: true })
     tables?: number[];
-
-    @ApiPropertyOptional({
-        description: 'The type of the reservation.',
-        // example: fakeCreateReservationData.type.toString(),
-        enumName: 'ReservationType',
-        enum: ReservationType
-    })
-    @IsIn([ReservationType.PRE_RESERVATION, ReservationType.WALK_IN])
-    type: ReservationType;
 
     constructor(createReservation: Partial<CreateReservationDto>) {
         super(createReservation);

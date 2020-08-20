@@ -1,12 +1,13 @@
 import { Moment } from 'moment';
-import { ReservationType, ReservationStatus } from './reservation.model';
-const moment = require('moment');
+import * as moment from 'moment';
+import * as faker from 'faker';
+import { ReservationStatus } from './reservation.model';
 
 export class UpdateReservation {
     /**
-     * Date time of the reservation
+     * Restaurant where the reservation has been taken. This is only the mongo ID in the DB.
      */
-    dateTime?: Moment;
+    siteId: string;
 
     /**
      * The date time the reservation is suppose to go at table.
@@ -44,29 +45,28 @@ export class UpdateReservation {
     tables?: number[];
 
     /**
-     * Type of the reservation.
-     */
-    type?: ReservationType;
-
-    /**
      * Status of the reservation
      */
     status?: ReservationStatus;
 
-    /**
-     * Tells if the tables are forced or not
-     */
-    forcedTable?: boolean;
-
     constructor(updateReservation: Partial<UpdateReservation>) {
         Object.assign(this, updateReservation);
-
-        // if (this.dateTime) {
-        //     this.dateTime = moment(this.dateTime);
-        // }
 
         if (this.estimatedAtTableAt) {
             this.estimatedAtTableAt = moment(this.estimatedAtTableAt);
         }
     }
 }
+
+export const fakeUpdateReservation = () =>
+    new UpdateReservation({
+        siteId: 'siteId',
+        firstName: faker.name.firstName(),
+        pax: faker.random.number({ min: 1, max: 20 }),
+        phoneNumber: faker.phone.phoneNumber(),
+        status: faker.random.objectElement(ReservationStatus) as ReservationStatus,
+        estimatedAtTableAt: moment(faker.date.future()),
+        email: faker.internet.email(),
+        lastName: faker.name.lastName(),
+        tables: [faker.random.number({ min: 1, max: 2000 })]
+    });

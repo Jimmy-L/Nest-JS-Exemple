@@ -74,21 +74,7 @@ export class ReservationsService {
             reservation = await reservation.save();
 
             const newReservation = new ReservationEntity({
-                _id: reservation._id,
-                createdAt: reservation.createdAt,
-                updatedAt: reservation.updatedAt,
-                email: reservation.email,
-                restaurant: reservation.restaurant,
-                // dateTime: reservation.dateTime,
-                lastName: reservation.lastName,
-                firstName: reservation.firstName,
-                forcedTable: reservation.forcedTable,
-                status: reservation.status,
-                type: reservation.type,
-                tables: reservation.tables,
-                estimatedAtTableAt: reservation.estimatedAtTableAt,
-                phoneNumber: reservation.phoneNumber,
-                pax: reservation.pax
+                ...reservation
             });
 
             return newReservation;

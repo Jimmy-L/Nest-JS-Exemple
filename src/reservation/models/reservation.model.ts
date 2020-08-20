@@ -1,5 +1,7 @@
+import * as mongoose from 'mongoose'
+import * as moment from "moment";
+import * as faker from 'faker';
 import { Moment } from "moment";
-import moment from "moment";
 
 export class Reservation {
     /**
@@ -109,3 +111,26 @@ export enum ReservationType {
     WALK_IN = 'WALK_IN',
     PRE_RESERVATION = 'PRE_RESERVATION'
 }
+
+/**
+ * Generate one fake reservation.
+ */
+export const fakeReservation = (
+    minDateTime: Moment = moment(faker.date.past()),
+    maxDateTime: Moment = moment(faker.date.future()),
+): Reservation => {
+    return new Reservation({
+        _id: mongoose.Types.ObjectId().toHexString(),
+        siteId: 'siteId',
+        estimatedAtTableAt: moment(faker.date.between(minDateTime.toDate(), maxDateTime.toDate())),
+        pax: faker.random.number({ min: 30, max: 250 }),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        email: faker.internet.email(),
+        phoneNumber: faker.phone.phoneNumber('fr'),
+        status: faker.random.objectElement(ReservationStatus) as ReservationStatus,
+        tables: [faker.random.number({ min: 300, max: 325 })],
+        createdAt: moment(),
+        updatedAt: moment()
+    });
+};
