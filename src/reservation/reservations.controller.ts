@@ -22,7 +22,6 @@ import { fakeCreateReservation } from './models/create-reservation.model';
 import { fakeUpdateReservation } from './models/update-reservation.model';
 
 @Controller('reservations')
-@UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('reservations')
 export class ReservationsController {
     constructor(

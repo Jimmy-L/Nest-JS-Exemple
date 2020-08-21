@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ReservationsModule } from './reservation/reservations.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import config from './config';
+import mongo from './mongo';
 import { LoggerModule } from './reservation/logger/logger.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ReservationsModule, LoggerModule, MongooseModule.forRoot(config.mongoUri, { useNewUrlParser: true }), AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, ReservationsModule, LoggerModule, MongooseModule.forRoot(mongo.mongoUri, { useNewUrlParser: true })],
 })
 export class AppModule { }
