@@ -1,4 +1,4 @@
-import { Controller, Get, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Request, Post, UseGuards, Body, UnauthorizedException } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthService } from './auth.service';
@@ -19,7 +19,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req) {
-        console.log(req.user);
-        return req.user;
+        const token = (req.headers.authorization as string).substring(7, (req.headers.authorization as string).length)
+        return this.authService.getProfile(token);
     }
 }

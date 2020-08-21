@@ -64,14 +64,12 @@ export class UsersService {
      * @param username
      */
     async findUserByUsername(username: string): Promise<User> {
-        console.log('findUserByUsername username', username);
         try {
             const user = await this.userModel
                 .findOne({ username: username })
                 .lean()
                 .exec();
 
-            console.log('findUserByUsername user', user);
 
             if (!user) {
                 throw new NotFoundException();
