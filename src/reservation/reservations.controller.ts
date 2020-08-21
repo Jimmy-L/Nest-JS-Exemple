@@ -21,7 +21,7 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { LoggerService } from './logger/logger.service';
 import { fakeCreateReservation } from './models/create-reservation.model';
 import { fakeUpdateReservation } from './models/update-reservation.model';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('reservations')
 @ApiTags('reservations')

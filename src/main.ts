@@ -16,7 +16,7 @@ async function bootstrap() {
     .setDescription('The reservation API description')
     .setVersion('0.1')
     .addTag('reservations')
-    .addServer('http://localhost:3000/api')
+    .addServer('http://localhost:3000')
     // .addServer('https://development-259117.appspot.com/api')
     .build();
 

@@ -51,4 +51,8 @@ export class CreateUserDto {
     })
     @IsOptional()
     email?: string;
+
+    constructor(createUser: Partial<CreateUserDto>) {
+        Object.assign(this, createUser);
+    }
 }

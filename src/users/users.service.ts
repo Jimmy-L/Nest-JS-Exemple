@@ -93,7 +93,6 @@ export class UsersService {
         try {
             const createdUser = new this.userModel(newUser);
             return await createdUser.save();
-
         } catch (e) {
             this.loggerService.error(e.message, 'UserService CreateUser');
             throw new Error(e);

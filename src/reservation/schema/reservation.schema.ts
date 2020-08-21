@@ -2,10 +2,6 @@ import * as mongoose from 'mongoose';
 import { ReservationStatus, ReservationType } from '../models/reservation.model';
 
 export const ReservationSchema = new mongoose.Schema({
-    // dateTime: {
-    //     type: Date,
-    //     required: false
-    // },
     estimatedAtTableAt: {
         type: Date,
         required: false
@@ -14,11 +10,6 @@ export const ReservationSchema = new mongoose.Schema({
         type: Number,
         required: false
     },
-    // restaurant: {
-    //     type: String,
-    //     required: true
-    // },
-    // forcedTable: Boolean,
     firstName: {
         type: String,
         required: false

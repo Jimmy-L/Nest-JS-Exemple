@@ -75,3 +75,17 @@ export class User {
         Object.assign(this, user);
     }
 }
+
+export const fakeUser = () => {
+    return new User({
+        _id: mongoose.Types.ObjectId().toHexString(),
+        username: faker.internet.email(),
+        lastName: faker.name.lastName(),
+        firstName: faker.name.firstName(),
+        email: faker.phone.phoneNumber(),
+        password: 'testPass',
+        phone: faker.internet.email(),
+        createdAt: moment(),
+        updatedAt: moment(),
+    })
+}

@@ -18,6 +18,7 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiPropertyOptional({
         description: 'Email of the customer taking the reservation.',
+        type: String,
         example: fakeCreateReservationData.email
     })
     @IsEmail()
@@ -44,6 +45,7 @@ export class CreateReservationDto extends CreateReservation
     @ApiProperty({
         description: 'Last name of the customer taking the reservation.',
         example: fakeCreateReservationData.lastName,
+        type: String,
     })
     @IsOptional()
     @MaxLength(20)
@@ -52,7 +54,8 @@ export class CreateReservationDto extends CreateReservation
     @ApiProperty({
         description: 'Number of people for the reservation.',
         example: fakeCreateReservationData.pax,
-        maximum: 30
+        type: Number,
+        maximum: 30,
     })
     @IsNumber()
     @Max(30)
@@ -60,7 +63,8 @@ export class CreateReservationDto extends CreateReservation
 
     @ApiPropertyOptional({
         description: 'Phone number of the customer making the reservation.',
-        example: fakeCreateReservationData.phoneNumber
+        example: fakeCreateReservationData.phoneNumber,
+        type: String,
     })
     @IsString()
     @IsOptional()

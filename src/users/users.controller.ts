@@ -1,17 +1,18 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, InternalServerErrorException } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entity/user.model';
 import * as faker from 'faker';
 import * as moment from 'moment';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { LoggerService } from '../reservation/logger/logger.service';
 
 @Controller('users')
 @ApiTags('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-    constructor(private usersService: UsersService) { }
+    constructor(private usersService: UsersService, private loggerService: LoggerService) { }
 
     @Get()
     @ApiOkResponse({
@@ -19,8 +20,13 @@ export class UsersController {
         type: User,
         isArray: true
     })
-    async UserRegistered() {
-        return await this.usersService.findAll();
+    async usersRegistered(): Promise<User[]> {
+        try {
+            return await this.usersService.findAll();
+        } catch (e) {
+            this.loggerService.error(e.message, 'UsersController usersRegistered');
+            throw new InternalServerErrorException();
+        }
     }
 
     @Post('register')
@@ -29,19 +35,20 @@ export class UsersController {
         type: CreateUserDto
     })
     async registerUser(@Body() createUserDto: CreateUserDto) {
-        const { username, password } = createUserDto;
+        try {
+            const { username, password } = createUserDto;
 
-        const newUser = new User({
-            username: username,
-            lastName: faker.name.lastName(),
-            firstName: faker.name.firstName(),
-            password: password,
-            phone: faker.phone.phoneNumber(),
-            email: username,
-            createdAt: moment(),
-            updatedAt: moment(),
-        });
+            const newUser = new User({
+                username: username,
+                password: password,
+                email: username,
+            });
 
-        return await this.usersService.createUser(newUser);
+            return await this.usersService.createUser(newUser);
+
+        } catch (e) {
+            this.loggerService.error(e.message, 'UsersController registerUser');
+            throw new InternalServerErrorException();
+        }
     }
 }
