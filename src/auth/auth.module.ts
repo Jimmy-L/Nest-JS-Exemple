@@ -9,9 +9,9 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 
 @Module({
-  imports: [UsersModule,  PassportModule, JwtModule.register({
+  imports: [UsersModule,  PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule.register({
     secret: jwtConstants.secret,
-    signOptions: { expiresIn: '60s' },
+    signOptions: { expiresIn: '120s' },
   }),],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

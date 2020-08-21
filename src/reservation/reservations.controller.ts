@@ -10,7 +10,8 @@ import {
     Body,
     Inject,
     Post,
-    NotFoundException
+    NotFoundException,
+    UseGuards
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
@@ -20,9 +21,11 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { LoggerService } from './logger/logger.service';
 import { fakeCreateReservation } from './models/create-reservation.model';
 import { fakeUpdateReservation } from './models/update-reservation.model';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('reservations')
 @ApiTags('reservations')
+@UseGuards(JwtAuthGuard)
 export class ReservationsController {
     constructor(
         private readonly reservationsService: ReservationsService,
