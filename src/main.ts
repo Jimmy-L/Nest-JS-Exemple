@@ -4,12 +4,19 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ReservationsModule } from './reservation/reservations.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const globalPrefix = 'reservations';
   // app.setGlobalPrefix(globalPrefix);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true
+    })
+  );
 
   const options = new DocumentBuilder()
     .setTitle('Reservations API')

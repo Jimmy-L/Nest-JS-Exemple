@@ -25,8 +25,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('reservations')
 @ApiTags('reservations')
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class ReservationsController {
     constructor(
         private readonly reservationsService: ReservationsService,
