@@ -5,6 +5,8 @@ import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import * as mongoose from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
+import { ReservationStatus } from './models/reservation.model';
+import { UpdateReservationsStatusDto } from './dto/update-reservations-status.dto';
 
 @Injectable()
 export class ReservationsService {
@@ -47,7 +49,7 @@ export class ReservationsService {
      *
      * @param reservationId
      */
-    async getReservationById(reservationId): Promise<ReservationEntity> {
+    async getReservationById(reservationId: string): Promise<ReservationEntity> {
         try {
             const reservation = await this.reservationModel
                 .findById(reservationId)
@@ -123,6 +125,27 @@ export class ReservationsService {
             });
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsService UpdateReservation');
+            throw new Error(e);
+        }
+    }
+
+    /**
+     * update all reservation status by its id
+     *
+     * @param reservationIds
+     */
+    async updateReservationsStatusByIds(reservationsIds: string[], status: ReservationStatus): Promise<any> {
+        try {
+            const reservations = await this.reservationModel
+                .updateMany(
+                    { _id: { $in: reservationsIds } },
+                    { $set: { status: status } },
+                    { multi: true })
+                .exec();
+
+            return Promise.resolve();
+        } catch (e) {
+            this.loggerService.error(e.message, 'ReservationsService updateReservationsStatusByIds');
             throw new Error(e);
         }
     }

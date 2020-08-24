@@ -11,7 +11,7 @@ import { jwtConstants } from '../jwt';
 @Module({
   imports: [UsersModule,  PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule.register({
     secret: jwtConstants.secret,
-    signOptions: { expiresIn: '5m' },
+    signOptions: { expiresIn: '2h' },
   }),],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

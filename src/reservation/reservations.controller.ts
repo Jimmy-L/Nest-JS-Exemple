@@ -1,17 +1,14 @@
 import {
-    ClassSerializerInterceptor,
     Controller,
     Get,
     InternalServerErrorException,
-    UseInterceptors,
-    Query,
     Put,
     Param,
-    Inject,
     Post,
-    NotFoundException,
     UseGuards,
-    Body
+    Body,
+    Request,
+    ParseIntPipe
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
@@ -19,11 +16,12 @@ import { ReservationEntity } from './entity/reservation.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { LoggerService } from '../logger/logger.service';
-import { fakeCreateReservation } from './models/create-reservation.model';
 import { fakeUpdateReservation } from './models/update-reservation.model';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import * as mongoose from 'mongoose';
-import * as moment from 'moment';
+import { ReservationStatus } from './models/reservation.model';
+import { UpdateReservationsStatusDto } from './dto/update-reservations-status.dto';
+import { ParseArrayPipe } from '@nestjs/common';
+import { arrayMaxSize } from 'class-validator';
 
 @Controller('reservations')
 @ApiTags('reservations')
@@ -43,13 +41,14 @@ export class ReservationsController {
     })
     async getReservations(): Promise<ReservationEntity[]> {
         try {
-            const reservations = await await this.reservationsService.getReservations();
+            const reservations = await this.reservationsService.getReservations();
             return reservations;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController GetReservations');
             throw new InternalServerErrorException();
         }
     }
+
     // @Query() queryReservation: QueryReservationDto
     // return await this.reservationsService.getReservations(queryReservation);
 
@@ -93,13 +92,28 @@ export class ReservationsController {
     })
     async updateReservationById(@Param('reservationId') reservationId: string, @Body() updateReservation: UpdateReservationDto): Promise<ReservationEntity> {
         try {
-            const fake_upadteReservation = fakeUpdateReservation();
-            // updateReservation = new UpdateReservationDto(updateReservation);
-            updateReservation = new UpdateReservationDto(fake_upadteReservation);
             const reservation = await this.reservationsService.updateReservationById(reservationId, updateReservation);
             return reservation;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController UpdateReservation');
+            throw new InternalServerErrorException();
+        }
+    }
+
+    @Put('status/:status')
+    @ApiOkResponse({
+        description: 'The reservations has successfully been updated.',
+        type: [ReservationEntity]
+    })
+    async updateStatusReservationsByIds(
+        @Param('status') status: ReservationStatus,
+        @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
+    ): Promise<any> {
+        try {
+            const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
+            return resolve;
+        } catch (e) {
+            this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
             throw new InternalServerErrorException();
         }
     }

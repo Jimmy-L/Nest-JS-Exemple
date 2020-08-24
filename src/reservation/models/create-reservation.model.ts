@@ -6,6 +6,10 @@ import * as mongoose from 'mongoose';
 
 export class CreateReservation {
     /**
+     * ID of the reservation
+     */
+    _id: string;
+    /**
      * Restaurant where the reservation has been taken. This is only the mongo ID in the DB.
      */
     siteId: string;
