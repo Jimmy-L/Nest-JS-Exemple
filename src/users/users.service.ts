@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { LoggerService } from '../reservation/logger/logger.service';
+import { LoggerService } from '../logger/logger.service';
 import * as mongoose from 'mongoose';
 import { User } from './entity/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -92,7 +92,19 @@ export class UsersService {
     async createUser(newUser: User): Promise<User> {
         try {
             const createdUser = new this.userModel(newUser);
-            return await createdUser.save();
+            const user = await createdUser.save();
+
+            return new User({
+                _id: user.id,
+                username: user.username,
+                lastName: user.lastName,
+                firstName: user.firstName,
+                email: user.email,
+                phone: user.phone,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt
+            });
+
         } catch (e) {
             this.loggerService.error(e.message, 'UserService CreateUser');
             throw new Error(e);

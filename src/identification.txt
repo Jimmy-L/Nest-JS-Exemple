@@ -1,2 +1,2 @@
 username : 'jimmy@gmail.com'
-mdp: 'Jimmy123'
+mdp: 'jimmy123'

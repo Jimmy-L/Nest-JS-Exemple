@@ -1,18 +1,17 @@
 import { Controller, Post, Body, Get, UseGuards, InternalServerErrorException } from '@nestjs/common';
-import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entity/user.model';
-import * as faker from 'faker';
-import * as moment from 'moment';
-import { LoggerService } from '../reservation/logger/logger.service';
+import { LoggerService } from '../logger/logger.service';
 
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-    constructor(private usersService: UsersService, private loggerService: LoggerService) { }
+    constructor(private readonly usersService: UsersService, private readonly loggerService: LoggerService) { }
 
     @Get()
     @ApiOkResponse({

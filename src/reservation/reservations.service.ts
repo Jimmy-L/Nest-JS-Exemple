@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReservationEntity } from './entity/reservation.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import * as mongoose from 'mongoose';
-import { LoggerService } from './logger/logger.service';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class ReservationsService {
@@ -47,17 +47,22 @@ export class ReservationsService {
      *
      * @param reservationId
      */
-    async findReservationById(reservationId): Promise<ReservationEntity> {
+    async getReservationById(reservationId): Promise<ReservationEntity> {
         try {
             const reservation = await this.reservationModel
                 .findById(reservationId)
                 .lean()
                 .exec();
 
+            // If the reservation is not found then throw an error
+            if (!reservation) { throw new NotFoundException(); }
+
             return new ReservationEntity({
                 ...reservation
             });
+
         } catch (e) {
+
             this.loggerService.error(e.message, 'ReservationsService FindOneReservationById');
             throw new Error(e);
         }
@@ -74,7 +79,17 @@ export class ReservationsService {
             reservation = await reservation.save();
 
             const newReservation = new ReservationEntity({
-                ...reservation
+                _id: reservation._id,
+                createdAt: reservation.createdAt,
+                updatedAt: reservation.updatedAt,
+                email: reservation.email,
+                lastName: reservation.lastName,
+                firstName: reservation.firstName,
+                status: reservation.status,
+                tables: reservation.tables,
+                estimatedAtTableAt: reservation.estimatedAtTableAt,
+                phoneNumber: reservation.phoneNumber,
+                pax: reservation.pax
             });
 
             return newReservation;

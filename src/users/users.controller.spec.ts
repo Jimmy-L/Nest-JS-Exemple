@@ -1,13 +1,13 @@
 import { TestingModule, Test } from "@nestjs/testing";
 import { UsersController } from './users.controller';
 import { AuthModule } from '../auth/auth.module';
-import { LoggerModule } from '../reservation/logger/logger.module';
+import { LoggerModule } from '../logger/logger.module';
 import { UsersService } from './users.service';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { fakeUser, User } from "./entity/user.model";
 import { CreateUserDto } from './dto/create-user.dto';
 import * as faker from 'faker';
-import { LoggerService } from '../reservation/logger/logger.service';
+import { LoggerService } from '../logger/logger.service';
 import { InternalServerErrorException } from "@nestjs/common";
 
 describe('Restaurant Services Controller', () => {
@@ -43,6 +43,7 @@ describe('Restaurant Services Controller', () => {
         controller = module.get<UsersController>(UsersController);
         service = module.get<UsersService>(UsersService);
         logger = module.get<LoggerService>(LoggerService);
+
     });
 
     it('should be defined', () => {
@@ -79,15 +80,14 @@ describe('Restaurant Services Controller', () => {
     it('should catch error if findAll method from Service failed', async () => {
         const createUserDto = new CreateUserDto({ username: faker.internet.email(), password: faker.internet.password() });
         const user = new User({ username: createUserDto.username, password: createUserDto.password, email: createUserDto.username });
-        jest.spyOn(service, 'createUser').mockResolvedValue(user);
+        jest.spyOn(logger, 'error').mockReturnThis();
+        jest.spyOn(service, 'createUser').mockRejectedValue(new Error('Internal Server Error') as any);
         try {
-            await controller.usersRegistered();
+            await controller.registerUser(createUserDto);
         } catch (e) {
             expect(logger.error).toHaveBeenCalledTimes(1);
-            expect(logger.error).toHaveBeenCalledWith('Internal Server Error', 'UsersController usersRegistered');
+            expect(logger.error).toHaveBeenCalledWith('Internal Server Error', 'UsersController registerUser');
         }
     });
-
-
 
 });
