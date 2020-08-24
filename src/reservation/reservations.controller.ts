@@ -22,6 +22,8 @@ import { LoggerService } from '../logger/logger.service';
 import { fakeCreateReservation } from './models/create-reservation.model';
 import { fakeUpdateReservation } from './models/update-reservation.model';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import * as mongoose from 'mongoose';
+import * as moment from 'moment';
 
 @Controller('reservations')
 @ApiTags('reservations')
@@ -60,6 +62,8 @@ export class ReservationsController {
         description: 'the resource is not found'
     })
     async getReservationById(@Param('reservationId') reservationId: string): Promise<ReservationEntity> {
+        console.log('mongos id', mongoose.Types.ObjectId().toHexString());
+        console.log('moment', moment().toISOString());
         try {
             const reservation = await this.reservationsService.getReservationById(reservationId);
             return reservation;

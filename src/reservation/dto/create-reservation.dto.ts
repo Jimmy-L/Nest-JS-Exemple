@@ -3,6 +3,7 @@ import { IsEmail, IsEnum, IsISO8601, IsMongoId, IsNumber, IsOptional, IsString, 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ReservationStatus } from '../models/reservation.model';
 import { CreateReservation, fakeCreateReservation } from '../models/create-reservation.model';
+import { Transform } from 'class-transformer';
 
 const fakeCreateReservationData = fakeCreateReservation();
 
@@ -57,6 +58,7 @@ export class CreateReservationDto extends CreateReservation
         type: Number,
         maximum: 30,
     })
+    @Transform(pax => parseInt(pax))
     @IsNumber()
     @Max(30)
     pax: number;

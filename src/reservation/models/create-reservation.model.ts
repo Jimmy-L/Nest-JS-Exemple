@@ -2,12 +2,9 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { ReservationStatus } from './reservation.model';
 import * as faker from 'faker';
+import * as mongoose from 'mongoose';
 
 export class CreateReservation {
-    /**
-     * ID of the reservation
-     */
-    _id: string;
     /**
      * Restaurant where the reservation has been taken. This is only the mongo ID in the DB.
      */
@@ -69,7 +66,7 @@ export class CreateReservation {
 
 export const fakeCreateReservation = () =>
     new CreateReservation({
-        siteId: 'siteId',
+        siteId: mongoose.Types.ObjectId().toHexString(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         pax: faker.random.number({ min: 1, max: 20 }),

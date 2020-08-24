@@ -31,7 +31,7 @@ export class UsersController {
     @Post('register')
     @ApiOkResponse({
         description: 'Register user and return it.',
-        type: CreateUserDto
+        type: User
     })
     async registerUser(@Body() createUserDto: CreateUserDto) {
         try {

@@ -121,7 +121,7 @@ export const fakeReservation = (
 ): Reservation => {
     return new Reservation({
         _id: mongoose.Types.ObjectId().toHexString(),
-        siteId: 'siteId',
+        siteId: mongoose.Types.ObjectId().toHexString(),
         estimatedAtTableAt: moment(faker.date.between(minDateTime.toDate(), maxDateTime.toDate())),
         pax: faker.random.number({ min: 30, max: 250 }),
         firstName: faker.name.firstName(),
