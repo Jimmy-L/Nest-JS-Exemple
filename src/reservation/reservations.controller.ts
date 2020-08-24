@@ -62,8 +62,6 @@ export class ReservationsController {
         description: 'the resource is not found'
     })
     async getReservationById(@Param('reservationId') reservationId: string): Promise<ReservationEntity> {
-        console.log('mongos id', mongoose.Types.ObjectId().toHexString());
-        console.log('moment', moment().toISOString());
         try {
             const reservation = await this.reservationsService.getReservationById(reservationId);
             return reservation;
@@ -80,8 +78,7 @@ export class ReservationsController {
     })
     async postReservation(@Body() createReservation: CreateReservationDto): Promise<ReservationEntity> {
         try {
-            const fake_createReservation = fakeCreateReservation();
-            const reservation = await this.reservationsService.postReservation(fake_createReservation);
+            const reservation = await this.reservationsService.postReservation(createReservation);
             return reservation;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController PostReservation');
