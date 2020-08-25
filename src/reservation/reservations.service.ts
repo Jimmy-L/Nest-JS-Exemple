@@ -134,12 +134,14 @@ export class ReservationsService {
      *
      * @param reservationIds
      */
-    async updateReservationsStatusByIds(reservationsIds: string[], status: ReservationStatus): Promise<any> {
+    async updateReservationsStatusByIds(updateReservationsStatusDto: UpdateReservationsStatusDto): Promise<any> {
         try {
+            const { reservationsIds, status } = updateReservationsStatusDto;
+
             const reservations = await this.reservationModel
                 .updateMany(
                     { _id: { $in: reservationsIds } },
-                    { $set: { status: status } },
+                    { $set: { status : status } },
                     { multi: true })
                 .exec();
 

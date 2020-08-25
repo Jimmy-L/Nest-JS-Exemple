@@ -1,18 +1,23 @@
-import { IsArray } from 'class-validator';
+import { IsNotEmpty, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ParseArrayPipe, ParseIntPipe } from '@nestjs/common';
+import { ReservationStatus } from '../models/reservation.model';
 import { Transform } from 'class-transformer';
 
 export class UpdateReservationsStatusDto {
+
     @ApiProperty({
         description: 'Ids of reservations to upadate',
-        type: [String]
+        type: String
     })
-    reservationIds;
+    @Transform(reservationIds => Array.from(reservationIds))
+    @IsNotEmpty()
+    reservationsIds: string[];
 
     @ApiProperty({
         description: 'Status to update',
         type: String
     })
-    status;
+    @IsIn(Object.keys(ReservationStatus))
+    @IsNotEmpty()
+    status: ReservationStatus;
 }

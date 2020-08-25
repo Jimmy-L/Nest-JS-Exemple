@@ -106,11 +106,13 @@ export class ReservationsController {
         type: [ReservationEntity]
     })
     async updateStatusReservationsByIds(
-        @Param('status') status: ReservationStatus,
-        @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
+        @Body() updateReservationsStatusDto: UpdateReservationsStatusDto
+        // @Param('status') status: ReservationStatus,
+        // @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
     ): Promise<any> {
         try {
-            const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
+            // const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
+            const resolve = await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto);
             return resolve;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
