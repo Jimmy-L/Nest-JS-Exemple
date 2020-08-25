@@ -40,7 +40,7 @@ export class ReservationsService {
             );
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsService GetReservations');
-            throw new Error(e);
+            throw e;
         }
     }
 
@@ -54,10 +54,8 @@ export class ReservationsService {
             const reservation = await this.reservationModel
                 .findById(reservationId)
                 .lean()
+                .orFail(() => new NotFoundException())
                 .exec();
-
-            // If the reservation is not found then throw an error
-            if (!reservation) { throw new NotFoundException(); }
 
             return new ReservationEntity({
                 ...reservation
@@ -66,9 +64,37 @@ export class ReservationsService {
         } catch (e) {
 
             this.loggerService.error(e.message, 'ReservationsService FindOneReservationById');
-            throw new Error(e);
+            throw e;
         }
     }
+
+    /**
+     * Find one reservation by its id
+     *
+     * @param reservationId
+     */
+    async getReservationsById(reservationsId: string[]): Promise<ReservationEntity[]> {
+        try {
+            const reservations = await this.reservationModel
+                .find({ _id: { $in: reservationsId } })
+                .lean()
+                .orFail(() => new NotFoundException())
+                .exec();
+
+            return reservations.map(reservation =>
+                new ReservationEntity({
+                    _id: reservation._id,
+                    ...reservation
+                })
+            );
+
+        } catch (e) {
+            this.loggerService.error(e.message, 'ReservationsService FindReservationsById');
+            throw e;
+        }
+    }
+
+
 
     /**
      * Post a new reservation in the database.
@@ -97,7 +123,7 @@ export class ReservationsService {
             return newReservation;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsService PostReservation');
-            throw new Error(e);
+            throw e;
         }
     }
 
@@ -117,6 +143,7 @@ export class ReservationsService {
                     },
                     { new: true }
                 )
+                .orFail(() => new NotFoundException())
                 .lean()
                 .exec();
 
@@ -125,53 +152,29 @@ export class ReservationsService {
             });
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsService UpdateReservation');
-            throw new Error(e);
+            throw e;
         }
     }
 
     /**
      * update all reservation status by its id
      *
-     * @param reservationIds
+     * @param reservationsId
+     * @param status
      */
-    // async updateReservationsStatusByIds(reservationsIds: string[], status: ReservationStatus): Promise<any> {
-    //     try {
-    //         const objectReservationsIds = reservationsIds.map(id => mongoose.Types.ObjectId(id));
-
-    //         const reservations = await this.reservationModel
-    //             .updateMany(
-    //                 { _id: { $in: reservationsIds } },
-    //                 { $set: { status: status } },
-    //                 { multi: true })
-    //             .exec();
-
-    //         return Promise.resolve();
-    //     } catch (e) {
-    //         this.loggerService.error(e.message, 'ReservationsService updateReservationsStatusByIds');
-    //         throw new Error(e);
-    //     }
-    // }
-
-    /**
-     * update all reservation status by its id
-     *
-     * @param updateReservationsStatusDto
-     */
-    async updateReservationsStatusByIds(updateReservationsStatusDto: UpdateReservationsStatusDto): Promise<any> {
+    async updateReservationsStatusByIds(reservationsId: string[], status: ReservationStatus): Promise<any> {
         try {
-            const reservationsIds = updateReservationsStatusDto.reservationsIds.map(id => mongoose.Types.ObjectId(id));
-
-            const reservations = await this.reservationModel
+            await this.reservationModel
                 .updateMany(
-                    { _id: { $in: reservationsIds } },
-                    { $set: { status: updateReservationsStatusDto.status } },
+                    { _id: { $in: reservationsId } },
+                    { $set: { status: status } },
                     { multi: true })
                 .exec();
 
-            return Promise.resolve();
+            return await this.getReservationsById(reservationsId);
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsService updateReservationsStatusByIds');
-            throw new Error(e);
+            throw e;
         }
     }
 

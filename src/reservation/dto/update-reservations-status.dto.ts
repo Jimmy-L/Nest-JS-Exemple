@@ -1,23 +1,29 @@
-import { IsNotEmpty, IsIn } from 'class-validator';
+import { IsMongoId, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ReservationStatus } from '../models/reservation.model';
-import { Transform } from 'class-transformer';
 
 export class UpdateReservationsStatusDto {
 
     @ApiProperty({
         description: 'Ids of reservations to update',
-        type: [String]
+        type: 'array',
+        items: {
+            allOf: [
+                {
+                    type: 'string'
+                }
+            ]
+        },
     })
-    @Transform(reservationId => Array.from(reservationId))
-    @IsNotEmpty()
-    reservationsIds: string[];
+    @IsMongoId({
+        each: true
+    })
+    reservationsId: string[];
 
     @ApiProperty({
         description: 'Status to update',
-        type: ReservationStatus
+        enum: ReservationStatus
     })
-    @IsIn(Object.keys(ReservationStatus))
-    @IsNotEmpty()
+    @IsEnum(ReservationStatus)
     status: ReservationStatus;
 }

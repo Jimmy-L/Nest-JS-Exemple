@@ -7,8 +7,7 @@ import {
     Post,
     UseGuards,
     Body,
-    Request,
-    ParseIntPipe
+    Request
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
@@ -16,12 +15,8 @@ import { ReservationEntity } from './entity/reservation.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { LoggerService } from '../logger/logger.service';
-import { fakeUpdateReservation } from './models/update-reservation.model';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ReservationStatus } from './models/reservation.model';
 import { UpdateReservationsStatusDto } from './dto/update-reservations-status.dto';
-import { ParseArrayPipe } from '@nestjs/common';
-import { arrayMaxSize } from 'class-validator';
 
 @Controller('reservations')
 @ApiTags('reservations')
@@ -52,7 +47,7 @@ export class ReservationsController {
     // @Query() queryReservation: QueryReservationDto
     // return await this.reservationsService.getReservations(queryReservation);
 
-    @Get(':reservationId')
+    @Get('/:reservationId')
     @ApiOkResponse({
         description: 'Return one reservation found by its id.',
         type: ReservationEntity
@@ -85,7 +80,26 @@ export class ReservationsController {
         }
     }
 
-    @Put('/:reservationId')
+    @Put('status')
+    @ApiOkResponse({
+        description: 'The reservations has successfully been updated.',
+    })
+    async updateStatusReservationsByIds(
+        @Body() updateReservationsStatusDto,
+        // : UpdateReservationsStatusDto,
+        @Request() req
+    ): Promise<any> {
+        console.log(updateReservationsStatusDto);
+        console.log(req.body);
+        try {
+            return await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto.reservationsId, updateReservationsStatusDto.status);
+        } catch (e) {
+            this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
+            throw new InternalServerErrorException();
+        }
+    }
+
+    @Put(':reservationId')
     @ApiOkResponse({
         description: 'The reservation has successfully been updated.',
         type: ReservationEntity
@@ -99,43 +113,5 @@ export class ReservationsController {
             throw new InternalServerErrorException();
         }
     }
-
-    // @Put('status/:status')
-    // @ApiOkResponse({
-    //     description: 'The reservations has successfully been updated.',
-    //     type: [ReservationEntity]
-    // })
-    // async updateStatusReservationsByIds(
-    //     @Param('status') status: ReservationStatus,
-    //     @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
-    // ): Promise<any> {
-    //     try {
-
-    //         const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
-
-    //         return resolve;
-    //     } catch (e) {
-    //         this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
-    //         throw new InternalServerErrorException();
-    //     }
-    // }
-
-    @Put('status')
-    @ApiOkResponse({
-        description: 'The reservations has successfully been updated.',
-        type: [ReservationEntity]
-    })
-    async updateStatusReservationsByIds(
-        @Body() updateReservationsStatusDto: UpdateReservationsStatusDto
-    ): Promise<any> {
-        try {
-
-            const resolve = await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto);
-
-            return resolve;
-        } catch (e) {
-            this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
-            throw new InternalServerErrorException();
-        }
-    }
+    
 }
