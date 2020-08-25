@@ -134,37 +134,14 @@ export class ReservationsService {
      *
      * @param reservationIds
      */
-    async updateReservationsStatusByIds(reservationsIds: string[], status: ReservationStatus): Promise<any> {
-        try {
-            const objectReservationsIds = reservationsIds.map(id => mongoose.Types.ObjectId(id));
-
-            const reservations = await this.reservationModel
-                .updateMany(
-                    { _id: { $in: reservationsIds } },
-                    { $set: { status: status } },
-                    { multi: true })
-                .exec();
-
-            return Promise.resolve();
-        } catch (e) {
-            this.loggerService.error(e.message, 'ReservationsService updateReservationsStatusByIds');
-            throw new Error(e);
-        }
-    }
-
-    // /**
-    //  * update all reservation status by its id
-    //  *
-    //  * @param reservationIds
-    //  */
-    // async updateReservationsStatusByIdsBis(updateReservationsStatusDto: UpdateReservationsStatusDto): Promise<any> {
+    // async updateReservationsStatusByIds(reservationsIds: string[], status: ReservationStatus): Promise<any> {
     //     try {
-    //         const reservationsIds = updateReservationsStatusDto.reservationsIds.map(id => mongoose.Types.ObjectId(id));
+    //         const objectReservationsIds = reservationsIds.map(id => mongoose.Types.ObjectId(id));
 
     //         const reservations = await this.reservationModel
     //             .updateMany(
     //                 { _id: { $in: reservationsIds } },
-    //                 { $set: { status: updateReservationsStatusDto.status } },
+    //                 { $set: { status: status } },
     //                 { multi: true })
     //             .exec();
 
@@ -174,5 +151,28 @@ export class ReservationsService {
     //         throw new Error(e);
     //     }
     // }
+
+    /**
+     * update all reservation status by its id
+     *
+     * @param updateReservationsStatusDto
+     */
+    async updateReservationsStatusByIds(updateReservationsStatusDto: UpdateReservationsStatusDto): Promise<any> {
+        try {
+            const reservationsIds = updateReservationsStatusDto.reservationsIds.map(id => mongoose.Types.ObjectId(id));
+
+            const reservations = await this.reservationModel
+                .updateMany(
+                    { _id: { $in: reservationsIds } },
+                    { $set: { status: updateReservationsStatusDto.status } },
+                    { multi: true })
+                .exec();
+
+            return Promise.resolve();
+        } catch (e) {
+            this.loggerService.error(e.message, 'ReservationsService updateReservationsStatusByIds');
+            throw new Error(e);
+        }
+    }
 
 }

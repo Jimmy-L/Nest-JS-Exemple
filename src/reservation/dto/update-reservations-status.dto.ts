@@ -6,7 +6,7 @@ import { Transform } from 'class-transformer';
 export class UpdateReservationsStatusDto {
 
     @ApiProperty({
-        description: 'Ids of reservations to upadate',
+        description: 'Ids of reservations to update',
         type: [String]
     })
     @Transform(reservationId => Array.from(reservationId))
