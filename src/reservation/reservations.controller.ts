@@ -127,13 +127,8 @@ export class ReservationsController {
     // })
     // async updateStatusReservationsByIds(
     //     @Body() updateReservationsStatusDto: UpdateReservationsStatusDto
-    //     // @Param('status') status: ReservationStatus,
-    //     // @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
     // ): Promise<any> {
-    //     console.log('azerazer', updateReservationsStatusDto);
     //     try {
-
-    //         // const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
 
     //         const resolve = await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto);
 

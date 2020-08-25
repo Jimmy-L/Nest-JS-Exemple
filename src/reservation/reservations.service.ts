@@ -158,7 +158,6 @@ export class ReservationsService {
     //  * @param reservationIds
     //  */
     // async updateReservationsStatusByIdsBis(updateReservationsStatusDto: UpdateReservationsStatusDto): Promise<any> {
-    //     console.log('azerzearazer', updateReservationsStatusDto);
     //     try {
     //         const reservationsIds = updateReservationsStatusDto.reservationsIds.map(id => mongoose.Types.ObjectId(id));
 
