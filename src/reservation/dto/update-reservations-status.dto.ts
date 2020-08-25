@@ -15,7 +15,7 @@ export class UpdateReservationsStatusDto {
 
     @ApiProperty({
         description: 'Status to update',
-        type: String
+        type: ReservationStatus
     })
     @IsIn(Object.keys(ReservationStatus))
     @IsNotEmpty()
