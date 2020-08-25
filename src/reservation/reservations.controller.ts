@@ -106,17 +106,41 @@ export class ReservationsController {
         type: [ReservationEntity]
     })
     async updateStatusReservationsByIds(
-        @Body() updateReservationsStatusDto: UpdateReservationsStatusDto
-        // @Param('status') status: ReservationStatus,
-        // @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
+        @Param('status') status: ReservationStatus,
+        @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
     ): Promise<any> {
         try {
-            // const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
-            const resolve = await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto);
+
+            const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
+
             return resolve;
         } catch (e) {
             this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
             throw new InternalServerErrorException();
         }
     }
+
+    // @Put('status/:status')
+    // @ApiOkResponse({
+    //     description: 'The reservations has successfully been updated.',
+    //     type: [ReservationEntity]
+    // })
+    // async updateStatusReservationsByIds(
+    //     @Body() updateReservationsStatusDto: UpdateReservationsStatusDto
+    //     // @Param('status') status: ReservationStatus,
+    //     // @Body('reservationsIds', ParseArrayPipe) reservationsIds: string[]
+    // ): Promise<any> {
+    //     console.log('azerazer', updateReservationsStatusDto);
+    //     try {
+
+    //         // const resolve = await this.reservationsService.updateReservationsStatusByIds(reservationsIds, status);
+
+    //         const resolve = await this.reservationsService.updateReservationsStatusByIds(updateReservationsStatusDto);
+
+    //         return resolve;
+    //     } catch (e) {
+    //         this.loggerService.error(e.message, 'ReservationsController updateStatusReservationsByIds');
+    //         throw new InternalServerErrorException();
+    //     }
+    // }
 }

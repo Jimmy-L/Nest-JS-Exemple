@@ -7,9 +7,9 @@ export class UpdateReservationsStatusDto {
 
     @ApiProperty({
         description: 'Ids of reservations to upadate',
-        type: String
+        type: [String]
     })
-    @Transform(reservationIds => Array.from(reservationIds))
+    @Transform(reservationId => Array.from(reservationId))
     @IsNotEmpty()
     reservationsIds: string[];
 
