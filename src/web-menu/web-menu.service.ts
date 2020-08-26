@@ -32,7 +32,7 @@ export class WebMenuService {
             return result.data;
         } catch (e) {
             this.loggerService.error(e.message, 'WebMenuService getWebMenu');
-            return new HttpException(e.response.statusText, e.response.status);
+            throw new HttpException(e.response.statusText, e.response.status);
         }
     }
 
