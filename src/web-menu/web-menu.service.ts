@@ -3,6 +3,7 @@ import { LoggerService } from '../logger/logger.service';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob, CronTime } from 'cron';
 import * as moment from 'moment';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class WebMenuService {
@@ -35,10 +36,10 @@ export class WebMenuService {
             const result = await this.httpService.post(
                 'https://development-aphilia.eu.auth0.com/oauth/token',
                 {
-                    client_id: '8o4OiMmXsKEiRI2y4pNnXIUsD4xAroc2',
-                    client_secret: '5LlbCQfjizVOx_WyDMzU2IY00Dg0HyE5p-m6NhysQuP7_m5pyVFQ7qwA689u6z_b',
-                    audience: 'https://development-aphilia.eu.auth0.com/api/v2/',
-                    grant_type: 'client_credentials'
+                    client_id: environment.webMenuApi.client_id,
+                    client_secret: environment.webMenuApi.client_secret,
+                    audience: environment.webMenuApi.audience,
+                    grant_type: environment.webMenuApi.grant_type,
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },

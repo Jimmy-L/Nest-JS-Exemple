@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 import { LoggerService } from '../logger/logger.service';
-import { environment } from 'src/environments/environement';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class Auth0Strategy extends PassportStrategy(Strategy) {
