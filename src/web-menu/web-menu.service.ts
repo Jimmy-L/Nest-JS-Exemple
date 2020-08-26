@@ -29,12 +29,8 @@ export class WebMenuService {
                 }
             ).toPromise();
 
-            console.log(result.data);
-
             return result.data;
-
         } catch (e) {
-            console.log(e)
             this.loggerService.error(e.message, 'WebMenuService getWebMenu');
             return new HttpException(e.response.statusText, e.response.status);
         }

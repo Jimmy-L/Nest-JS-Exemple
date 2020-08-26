@@ -15,7 +15,7 @@ export class WebMenuController {
             return await this.webMenuService.getWebMenu(siteId);
         } catch (e) {
             this.loggerService.error(e.message, 'WebMenuController getWebMenu');
-            return new RpcException(e.response.data);
+            throw e;
         }
     }
 
