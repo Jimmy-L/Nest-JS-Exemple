@@ -1,9 +1,10 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, HttpException } from '@nestjs/common';
 import { LoggerService } from '../logger/logger.service';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob, CronTime } from 'cron';
 import * as moment from 'moment';
 import { environment } from '../environments/environment';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class WebMenuService {
@@ -19,13 +20,24 @@ export class WebMenuService {
     /**
      * Get Menu Articles Api
      */
-    async getWebMenu() {
-        const result = await this.httpService.get(
-            '',
-            {
-                headers: { 'authorization': `Bearer ${this._webMenuToken}` },
-            }
-        ).toPromise();
+    async getWebMenu(siteId: string) {
+        try {
+            const result = await this.httpService.get(
+                `https://development.aphilia.io/api/deliveries/menus?siteId=${siteId}`,
+                {
+                    headers: { 'Authorization': `Bearer ${this._webMenuToken}` },
+                }
+            ).toPromise();
+
+            console.log(result.data);
+
+            return result.data;
+
+        } catch (e) {
+            console.log(e)
+            this.loggerService.error(e.message, 'WebMenuService getWebMenu');
+            return new HttpException(e.response.statusText, e.response.status);
+        }
     }
 
     /**
@@ -50,7 +62,7 @@ export class WebMenuService {
 
             return result.data;
         } catch (e) {
-            this.loggerService.error(e.response.data, 'WebMenuService getTokenWebMenu');
+            this.loggerService.error(e.message, 'WebMenuService getTokenWebMenu');
             throw e;
         }
     }

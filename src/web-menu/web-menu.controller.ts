@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
 import { WebMenuService } from './web-menu.service';
 import { LoggerService } from '../logger/logger.service';
+import { RpcException } from '@nestjs/microservices';
 
 @Controller('web-menu')
 export class WebMenuController {
@@ -10,9 +11,11 @@ export class WebMenuController {
     @Get('menu')
     async getWebMenu() {
         try {
-            return await this.webMenuService.getWebMenu();
+            let siteId = '101';
+            return await this.webMenuService.getWebMenu(siteId);
         } catch (e) {
             this.loggerService.error(e.message, 'WebMenuController getWebMenu');
+            return new RpcException(e.response.data);
         }
     }
 
